@@ -18,8 +18,27 @@ hocuspocusWss.on("connection", (ws, req) => {
   hocuspocus.handleConnection(ws, req);
 });
 
+const startTime = Date.now();
+
 // ── HTTP server ─────────────────────────────────────────────
 const server = http.createServer((req, res) => {
+  const url = new URL(req.url ?? "/", `http://localhost`);
+
+  if (url.pathname === "/healthz") {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify({
+        status: "ok",
+        uptime: Math.floor((Date.now() - startTime) / 1000),
+        connections: {
+          signaling: signalingWss.clients.size,
+          collaboration: hocuspocusWss.clients.size,
+        },
+      }),
+    );
+    return;
+  }
+
   res.writeHead(200, { "Content-Type": "application/json" });
   res.end(
     JSON.stringify({
