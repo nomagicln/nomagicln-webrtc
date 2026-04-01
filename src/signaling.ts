@@ -10,10 +10,21 @@ interface Message {
 
 const PING_INTERVAL_MS = 30_000;
 
-export function attachSignaling(wss: WebSocketServer): void {
-  // topic -> set of connected clients
-  const topics = new Map<string, Set<WebSocket>>();
+/**
+ * A shared topic store can be passed in so that multiple WebSocketServer
+ * instances (e.g. different URL paths) share the same room state.
+ * If omitted, a new store is created that is private to this server.
+ */
+export type TopicStore = Map<string, Set<WebSocket>>;
 
+export function createTopicStore(): TopicStore {
+  return new Map<string, Set<WebSocket>>();
+}
+
+export function attachSignaling(
+  wss: WebSocketServer,
+  topics: TopicStore = createTopicStore(),
+): void {
   function removeSubs(conn: WebSocket, subscribedTopics: Set<string>): void {
     subscribedTopics.forEach((topicName) => {
       const subs = topics.get(topicName);

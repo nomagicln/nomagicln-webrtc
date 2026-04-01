@@ -1,15 +1,20 @@
 import http from "http";
 import { WebSocketServer } from "ws";
 import { createHocuspocus } from "./hocuspocus";
-import { attachSignaling } from "./signaling";
+import { attachSignaling, createTopicStore } from "./signaling";
 
 const PORT = parseInt(process.env.PORT ?? "4444", 10);
 const SIGNALING_PATH = process.env.SIGNALING_PATH ?? "/signaling";
 const HOCUSPOCUS_PATH = process.env.HOCUSPOCUS_PATH ?? "/collaboration";
 
+// Shared room state: all signaling WebSocketServers pointing to the same
+// store will route clients with the same topic/room into the same room,
+// regardless of which URL path they connected through.
+const sharedTopics = createTopicStore();
+
 // ── y-webrtc signaling ──────────────────────────────────────
 const signalingWss = new WebSocketServer({ noServer: true });
-attachSignaling(signalingWss);
+attachSignaling(signalingWss, sharedTopics);
 
 // ── Hocuspocus collaboration ────────────────────────────────
 const hocuspocus = createHocuspocus();
