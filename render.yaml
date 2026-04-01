@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: nomagicln-webrtc
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: NODE_ENV
+        value: production
+      - key: SIGNALING_PATH
+        value: /signaling
+      - key: HOCUSPOCUS_PATH
+        value: /collaboration
