@@ -1,7 +1,7 @@
 {
   "name": "nomagicln-webrtc",
   "version": "1.0.0",
-  "description": "Yjs signaling server with WebRTC support and Hocuspocus collaboration, ready for Docker and Render deployment",
+  "description": "Hocuspocus collaboration server, ready for Docker and Render deployment",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
@@ -10,8 +10,6 @@
   },
   "keywords": [
     "yjs",
-    "webrtc",
-    "signaling",
     "hocuspocus",
     "collaboration"
   ],
@@ -20,7 +18,6 @@
   "dependencies": {
     "@hocuspocus/extension-logger": "^3.4.4",
     "@hocuspocus/server": "^3.0.0",
-    "lib0": "^0.2.98",
     "ws": "^8.18.0"
   },
   "devDependencies": {
