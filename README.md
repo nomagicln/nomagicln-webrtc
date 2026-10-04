@@ -7,7 +7,8 @@ A lightweight Node.js signaling server for [Yjs](https://github.com/yjs/yjs), su
 | Path | Protocol | Purpose |
 |---|---|---|
 | `GET /` | HTTP | Health check |
-| `ws://<host>/signaling` | WebSocket | y-webrtc signaling (default) |
+| `GET /healthz` | HTTP | Health check with connection counts |
+| `wss://<host>/gomoku` | WebSocket | Two-player Gomoku room relay |
 | `ws://<host>/collaboration` | WebSocket | Hocuspocus CRDT collaboration (default) |
 
 Paths are configurable via environment variables.
@@ -95,3 +96,11 @@ The service will be available at `wss://<your-service>.onrender.com`.
 ## License
 
 MIT
+
+## Gomoku room relay
+
+The `/gomoku` endpoint forwards small game messages over WebSocket, avoiding WebRTC NAT negotiation and TURN requirements. Existing `/collaboration` clients are unaffected. Rooms and seats live only in memory; game messages are forwarded without storage. Traffic uses HTTPS/WSS on Render. This is a room relay, not a TURN server.
+
+Client registration: `{ "t": "host", "code": "ABC23" }` or `{ "t": "join", "code": "ABC23" }`. The server returns `created` / `joined`, informs the host with `peer-joined`, and rejects missing/full rooms. Forward messages with `{ "t": "message", "data": { "t": "move", "x": 7, "y": 7, "color": 1, "ply": 1 } }`. The other player receives the same envelope. Disconnect sends `peer-left`; host disconnect deletes the room. Codes are five characters, payloads at most 8 KiB. Unregistered connections and dead sockets expire.
+
+The free Render instance may sleep when idle, so clients allow 90 seconds for wake-up. Server restarts end active rooms. Validate with `npm test` before deploying.
