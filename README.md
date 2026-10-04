@@ -2,6 +2,15 @@
 
 A lightweight Node.js signaling server for [Yjs](https://github.com/yjs/yjs), supporting both **y-webrtc WebRTC signaling** and **Hocuspocus real-time collaboration** on a single port.
 
+## Production deployment
+
+- Service: https://nomagicln-webrtc.onrender.com
+- Health check: https://nomagicln-webrtc.onrender.com/healthz
+- Hocuspocus collaboration: `wss://nomagicln-webrtc.onrender.com/collaboration`
+- Gomoku rooms: `wss://nomagicln-webrtc.onrender.com/gomoku`
+
+Hosted on Render's free plan. The first connection after idle may take about one minute to wake the service.
+
 ## Endpoints
 
 | Path | Protocol | Purpose |
